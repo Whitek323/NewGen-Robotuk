@@ -1,0 +1,36 @@
+What do you want to know? -> ขอ qrcode แวัดเขาทำเทียม
+
+
+
+bQzxhkrpoqtnRXYW8.png
+Do you want to continue chatting? (yes/no): yes
+Enter 1 if select Record or enter 0 for type -> 0
+What do you want to know? -> สวัสดี
+
+
+สวัสดีค่ะ ที่จังหวัดสุพรรณบุรีและอำเภออู่ทอง มีสถานที่ท่องเที่ยวมากมายที่คุณไม่ควรพลาด เช่น ตลาดเก่าชุมชนอู่ทอง วัดเขาพระศรีสรรเพชญาราม
+ร้านสูตรเตี๋ยวจรเข้ เมืองโบราณอู่ทอง พิพิธภัณฑสถานแห่งชาติอู่ทอง และวัดเขาทำเทียม คุณมองหาสถานที่ไหนในวันนี้บ้าง?
+Do you want to continue chatting? (yes/no): no
+(p3d10-ai) PS C:\Projects\ai\rag\test_NJ4> python main.py
+Processing pg16.txt...
+Enter 1 if select Record or enter 0 for type -> 0
+What do you want to know? -> สวัสดี
+
+
+กำลังเล่นเสียง...
+เสียงเล่นเสร็จสิ้น
+สวัสดีครับ/ค่ะ มีทั้งตลาดเก่าชุมชน อู่ทอง และวัดเก่าแก่ ตลอดจนร้านอาหารและแหล่งโบราณคดีอื่น ๆ ในอำเภออู่ทอง จังหวัดสุพรรณบุรี
+หากมีสถานที่ท่องเที่ยวใดที่คุณอยากได้รู้ข้อมูลเพิ่มเติมกรุณาแจ้งให้ทราบครับ/ค่ะ
+Do you want to continue chatting? (yes/no):
+
+
+                                            yes
+Enter 1 if select Record or enter 0 for type -> 0
+What do you want to know? ->ขอ qrcode ไปวัดเขาทำเทียม
+
+
+กำลังเล่นเสียง...
+เสียงเล่นเสร็จสิ้น
+คุณสามารถสแกน QR Code ด้านล่างเพื่อไปที่ วัดเขาทำเทียม 
+
+bQzxhkrpoqtnRXYW8.png

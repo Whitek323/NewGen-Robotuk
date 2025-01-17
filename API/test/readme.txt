@@ -1,0 +1,1 @@
+tts = TTS(pretrained="lunarlist_onnx") ใช้ไม่ได้
