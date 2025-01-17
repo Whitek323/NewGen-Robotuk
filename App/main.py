@@ -31,7 +31,7 @@ def on_keypress(event, face_instance):
         print(f"Prompt entered: {prompt}")
     elif event.name == 'r':
         # Toggle recording logic here
-        print("Toggle recording")
+        print("Toggle recording")#kk
 
 
 def key_event_listener(event, face_instance):
