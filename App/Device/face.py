@@ -1,25 +1,26 @@
-# face.py
 import tkinter as tk
 from PIL import Image, ImageTk
 import threading
 import time
 
+
 class Face:
-    def __init__(self, root, images, on_keypress):
+    def __init__(self, root, load_images_callback, animation_states, on_keypress_callback):
         self.root = root
-        self.images = images
-        self.current_animation_state = "idle"
+        self.images = load_images_callback(root)
+        self.current_animation_state = animation_states["idle"]
         self.stop_animation = False
         self.qr_displayed = False
+
         self.image_label = tk.Label(root)
         self.image_label.pack(expand=True, fill="both")
 
-        # Bind keypress events
-        self.root.bind("<Escape>", lambda e: self.root.attributes("-fullscreen", False))
-        threading.Thread(target=self.animation_loop, daemon=True).start()
+        self.animation_thread = threading.Thread(target=self.animation_loop)
+        self.animation_thread.daemon = True
+        self.animation_thread.start()
 
-        # Keyboard event listener
-        self.root.bind_all("<Key>", on_keypress)
+        self.root.bind("<Escape>", lambda e: self.root.attributes("-fullscreen", False))
+        self.on_keypress_callback = on_keypress_callback
 
     def animation_loop(self):
         frame_index = 0
@@ -37,9 +38,6 @@ class Face:
         qr_photo = ImageTk.PhotoImage(qr_image)
         self.image_label.config(image=qr_photo)
         self.image_label.image = qr_photo
-
-    def set_animation_state(self, state):
-        self.current_animation_state = state
 
     def stop(self):
         self.stop_animation = True
