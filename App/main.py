@@ -1,19 +1,19 @@
 import tkinter as tk
 import keyboard
 from devices import *
+from ui import *
 from service import AIService
 
 class MainApplication:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("AI Assistant Frontend")
-        
         # Initialize components
         self.face = Display(self.root)
         self.speaker = Speaker()
         self.microphone = Microphone()
         self.service = AIService()
-        
+        self.face.set_text("")
         # Bind escape key
         self.root.bind("<Escape>", lambda e: self.root.attributes("-fullscreen", False))
         
@@ -29,7 +29,7 @@ class MainApplication:
 
     def handle_chat(self, prompt):
         self.face.set_state("work")
-        
+        self.face.set_text("กำลังประมวลผล")
         # Get response from API
         response = self.service.send_prompt(prompt)
         

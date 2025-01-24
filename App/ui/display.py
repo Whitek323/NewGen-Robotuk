@@ -3,24 +3,45 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import threading
 import time
-
+from tkinter import ttk
 import requests
 from config import *
+from .subtitle import SubtitleSettingsDialog
 
 class Display:
     def __init__(self, root):
-        self.root = root
-        self.current_state = "idle"
-        self.stop_animation = False
-        self.qr_displayed = False
-        
-        # Create and pack the label
-        self.label = tk.Label(root)
-        self.label.pack(expand=True, fill="both")
-        
-        # Load images
-        self.images = self.load_images()
-        
+            self.root = root
+            self.current_state = "idle"
+            self.stop_animation = False
+            self.qr_displayed = False
+            
+            # Create and pack the label
+            self.label = tk.Label(root)
+            self.label.pack(expand=True, fill="both")
+            
+            # Load images
+            self.images = self.load_images()
+            
+            # Subtitle settings
+            self.subtitle_settings = {
+                'enabled': True,
+                'bg_color': 'gray',
+                'text_color': 'white',
+                'font_size': 24
+            }
+            
+            # Text label for subtitles
+            self.text_label = tk.Label(root, text="", 
+                                    font=("Arial", self.subtitle_settings['font_size']), 
+                                    fg=self.subtitle_settings['text_color'], 
+                                    bg=self.subtitle_settings['bg_color'], 
+                                    wraplength=root.winfo_screenwidth())
+            self.text_label.place(relx=0.5, rely=0.9, anchor='s')
+            
+            # Settings button
+            self.settings_btn = tk.Button(root, text="⚙️", command=self.open_subtitle_settings)
+            self.settings_btn.place(relx=1.0, rely=0.0, anchor='ne')
+    
     def load_images(self):
         """Preload all animation frames and resize to full screen."""
         screen_width = self.root.winfo_screenwidth()
@@ -115,3 +136,28 @@ class Display:
         
     def stop_animation(self):
         self.stop_animation = True
+
+    def open_subtitle_settings(self):
+        settings_dialog = SubtitleSettingsDialog(self.root, self.subtitle_settings)
+        settings_dialog.set_save_callback(self.update_subtitle_settings)
+        
+    def update_subtitle_settings(self, new_settings):
+        self.subtitle_settings = new_settings
+        
+        # Update text label based on new settings
+        self.text_label.config(
+            bg=new_settings['bg_color'], 
+            fg=new_settings['text_color'], 
+            font=("Arial", new_settings['font_size'])
+        )
+        
+    def set_text(self, text):
+        if not self.subtitle_settings['enabled']:
+            self.text_label.place_forget()
+            return
+        
+        if text:
+            self.text_label.config(text=text)
+            self.text_label.place(relx=0.5, rely=0.9, anchor='s')
+        else:
+            self.text_label.place_forget()
