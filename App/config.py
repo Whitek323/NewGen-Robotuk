@@ -7,7 +7,7 @@ API_PATH = "http://127.0.0.1:5000/"
 
 # Animation states
 MODES = {
-    "speak": ["./Device/img/5.jpg", "./Device/img/4.jpg"],
-    "idle": ["./Device/img/5.jpg","./Device/img/4.jpg","./Device/img/6.jpg"],
-    "work": ["./Device/img/3.jpg", "./Device/img/2.jpg", "./Device/img/1.jpg"],
+    "speak": ["./Assets/face/5.jpg", "./Assets/face/4.jpg"],
+    "idle": ["./Assets/face/5.jpg","./Assets/face/4.jpg","./Assets/face/6.jpg"],
+    "work": ["./Assets/face/3.jpg", "./Assets/face/2.jpg", "./Assets/face/1.jpg"],
 }

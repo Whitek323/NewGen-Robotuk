@@ -81,12 +81,12 @@ def handle_chat():
         ],
     )
 
-    # Process TTS
-    tts_model_name = TTS_MODEL  # Replace with your model
-    tts_text = response["message"]["content"]
-    tts = TTS(tts_model_name, tts_text)
     audio_file_path = "static/audio/response.wav"  # Save audio in a static folder
-    tts.save_audio(audio_file_path)  # Use save_audio() in TTS to save the generated audio
+    # Process TTS
+    tts_text = response["message"]["content"]
+    tts = TTS(tts_text,audio_file_path)
+    # tts.vistts(TTS_MODEL)
+    tts.gtts()
 
     # Check for QR code in the response
     qr_path = qr_handler.find_qr_in_response(response["message"]["content"])
