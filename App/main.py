@@ -1,59 +1,77 @@
 import tkinter as tk
-import threading
-import keyboard
 from Device import Face
-from PIL import Image, ImageTk
+import keyboard
+import threading
+from recorder import Recorder
+import requests
 from config import *
 
+class Main:
+    def __init__(self):
+        self.current_animation_state = "idle"
+        self.is_recording = False
+        self.recorder = Recorder(sample_rate=16000, channels=1)
+        
+        # Initialize root and face
+        self.root = tk.Tk()
+        self.root.title("AI Assistant Frontend")
+        self.face = Face(self.root)
+        
+        # Bind escape key
+        self.root.bind("<Escape>", lambda e: self.root.attributes("-fullscreen", False))
+        
+        # Set up keyboard listener
+        keyboard.on_press(self.key_event_listener)
 
-def load_images(root):
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    images = {}
-    for mode, paths in MODES.items():
-        mode_frames = []
-        for path in paths:
-            img = Image.open(path)
-            ratio = min(screen_width / img.width, screen_height / img.height)
-            new_width = int(img.width * ratio)
-            new_height = int(img.height * ratio)
-            resized_img = img.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
-            img_tk = ImageTk.PhotoImage(resized_img)
-            mode_frames.append(img_tk)
-        images[mode] = mode_frames
-    return images
+    def toggle_recording(self):
+        if not self.is_recording:
+            self.is_recording = True
+            self.recorder.start()
+        else:
+            self.is_recording = False
+            wav_file = self.recorder.stop()
+            if wav_file:
+                transcription = self.recorder.transcribe_audio(wav_file)
+                self.start_chat_thread(transcription)
 
+    def handle_chat(self, prompt):
+        self.current_animation_state = "work"
+        self.face.set_animation_state("work")
+        
+        data = {"prompt": prompt}
+        response = requests.post(API_URL, json=data).json()
 
-def on_keypress(event, face_instance):
-    if event.name == 's':
-        prompt = input("What do you want to ask? -> ")
-        # Start chat logic here
-        print(f"Prompt entered: {prompt}")
-    elif event.name == 'r':
-        # Toggle recording logic here
-        print("Toggle recording")#kk
+        self.current_animation_state = "speak"
+        self.face.set_animation_state("speak")
+        
+        qr_path = response.get("qr_path")
+        if qr_path:
+            self.face.display_qr(API_PATH + "static/QRIMG/" + qr_path)
+        else:
+            self.face.hide_qr()
 
+        print(f"AI Response: {response['response']}")
 
-def key_event_listener(event, face_instance):
-    on_keypress(event, face_instance)
+        audio_path = response.get("audio_path")
+        if audio_path:
+            self.face.play_audio(API_PATH + audio_path)
 
+        self.current_animation_state = "idle"
+        self.face.set_animation_state("idle")
 
-def main():
-    root = tk.Tk()
-    root.title("AI Assistant Frontend")
+    def start_chat_thread(self, prompt):
+        threading.Thread(target=self.handle_chat, args=(prompt,), daemon=True).start()
 
-    face_instance = Face(
-        root=root,
-        load_images_callback=load_images,
-        animation_states={"idle": "idle", "work": "work", "speak": "speak"},
-        on_keypress_callback=on_keypress
-    )
+    def key_event_listener(self, event):
+        if event.name == 's':
+            prompt = input("What do you want to ask? -> ")
+            self.start_chat_thread(prompt)
+        elif event.name == 'r':
+            self.toggle_recording()
 
-    keyboard.on_press(lambda event: key_event_listener(event, face_instance))
-
-    root.mainloop()
-    face_instance.stop()
-
+    def run(self):
+        self.root.mainloop()
 
 if __name__ == "__main__":
-    main()
+    app = Main()
+    app.run()
