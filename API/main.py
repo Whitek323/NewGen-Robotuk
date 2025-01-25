@@ -25,7 +25,7 @@ model = WhisperModel("small", device="cuda")
 def hello():
     return "Hello from Flask!"
 
-@timer
+@api_timer
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
     # Check if a file is sent
@@ -47,7 +47,7 @@ def transcribe():
 
     return jsonify({"transcription": transcription})
 
-
+@api_timer
 @app.before_request
 def initialize_embeddings():
     global paragraphs, embeddings, text_simi
@@ -59,7 +59,8 @@ def initialize_embeddings():
         file_embeddings = embed_m.get_embeddings(filename, EMBEDDING_MODEL, file_paragraphs)
         paragraphs.extend(file_paragraphs)
         embeddings.extend(file_embeddings)
-@timer
+        
+@api_timer
 @app.route('/chat', methods=['POST'])
 def handle_chat():
     data = request.json
