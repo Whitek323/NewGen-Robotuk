@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from QR_Codes.qrcode import QRCodeHandler
+from API.features.qrcode import QRCodeHandler
 from rag import *
 from config import *
 from sound import TTS
