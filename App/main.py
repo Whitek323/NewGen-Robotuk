@@ -29,7 +29,7 @@ class MainApplication:
 
     def handle_chat(self, prompt):
         self.face.set_state("work")
-        self.face.set_text("กำลังประมวลผล")
+        # self.face.set_text("กำลังประมวลผล")
         # Get response from API
         response = self.service.send_prompt(prompt)
         

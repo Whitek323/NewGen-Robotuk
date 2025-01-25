@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from API.features.qrcode import QRCodeHandler
+from features.qrcode import QRCodeHandler
 from rag import *
 from config import *
 from sound import TTS
@@ -12,7 +12,6 @@ app = Flask(__name__)
 CORS(app)
 # Initialize necessary objects
 embed_m = EmbeddingM()
-text_simi = TextSimilarity("pg16.txt")
 qr_handler = QRCodeHandler()
 
 # Initialize embeddings
@@ -26,6 +25,7 @@ model = WhisperModel("small", device="cuda")
 def hello():
     return "Hello from Flask!"
 
+@timer
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
     # Check if a file is sent
@@ -50,7 +50,7 @@ def transcribe():
 
 @app.before_request
 def initialize_embeddings():
-    global paragraphs, embeddings
+    global paragraphs, embeddings, text_simi
     files = [f for f in os.listdir("upload") if f.endswith(".txt")]
     for filename in files:
         text_simi = TextSimilarity(filename)
@@ -59,7 +59,7 @@ def initialize_embeddings():
         file_embeddings = embed_m.get_embeddings(filename, EMBEDDING_MODEL, file_paragraphs)
         paragraphs.extend(file_paragraphs)
         embeddings.extend(file_embeddings)
-
+@timer
 @app.route('/chat', methods=['POST'])
 def handle_chat():
     data = request.json
