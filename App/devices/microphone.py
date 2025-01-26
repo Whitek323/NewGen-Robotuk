@@ -6,11 +6,14 @@ class Microphone:
         self.service = AIService()
         self.is_recording = False
         
-    def toggle_recording(self, callback):
+    def toggle_recording(self, callback,face):
         if not self.is_recording:
             self.start_recording()
+            face.set_text("[Recorder] เริ่มการบันทึกเสียง...")
         else:
             self.stop_recording(callback)
+            face.set_text("[Recorder] หยุดการบันทึกเสียง...")
+
             
     def start_recording(self):
         self.is_recording = True

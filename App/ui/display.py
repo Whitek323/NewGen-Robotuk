@@ -152,6 +152,7 @@ class Display:
         )
         
     def set_text(self, text):
+        # If subtitles are disabled, immediately remove text label
         if not self.subtitle_settings['enabled']:
             self.text_label.place_forget()
             return
@@ -159,5 +160,15 @@ class Display:
         if text:
             self.text_label.config(text=text)
             self.text_label.place(relx=0.5, rely=0.9, anchor='s')
+            
+            # Cancel any previous scheduled text removal
+            if hasattr(self, '_text_removal_job'):
+                self.root.after_cancel(self._text_removal_job)
+            
+            # Schedule text removal after 5 seconds
+            self._text_removal_job = self.root.after(5000, self.clear_text)
         else:
             self.text_label.place_forget()
+    
+    def clear_text(self):
+        self.text_label.place_forget()

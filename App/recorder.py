@@ -25,7 +25,7 @@ class Recorder:
             self.stream.stop()
         self.recording = True
         self.audio_data = []  # Clear previous data
-        print("[Recorder] Recording started...")
+        print("[Recorder] เริ่มการบันทึกเสียง...")
 
         self.stream = sd.InputStream(
             samplerate=self.sample_rate,
@@ -39,7 +39,7 @@ class Recorder:
         if not self.recording:
             return None
         self.recording = False
-        print("[Recorder] Recording stopped...")
+        print("[Recorder] หยุดการบันทึกเสียง...")
 
         if self.stream is not None:
             self.stream.stop()

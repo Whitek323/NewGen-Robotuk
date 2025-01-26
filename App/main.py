@@ -25,7 +25,7 @@ class MainApplication:
             prompt = input("What do you want to ask? -> ")
             self.handle_chat(prompt)
         elif event.name == 'r':
-            self.microphone.toggle_recording(self.handle_chat)
+            self.microphone.toggle_recording(self.handle_chat,self.face)
 
     def handle_chat(self, prompt):
         self.face.set_state("work")
