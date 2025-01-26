@@ -43,31 +43,43 @@ class Display:
             self.settings_btn.place(relx=1.0, rely=0.0, anchor='ne')
     
     def load_images(self):
-        """Preload all animation frames and resize to full screen."""
+        """Preload all animation frames and resize to full screen without borders."""
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         
         images = {}
         for mode, paths in MODES.items():
             mode_frames = []
-            if not paths:  # ตรวจสอบว่ามี paths หรือไม่
+            if not paths:
                 print(f"Warning: No image paths found for mode {mode}")
                 continue
                 
             for path in paths:
                 try:
                     img = Image.open(path)
-                    ratio = min(screen_width / img.width, screen_height / img.height)
+                    
+                    # Calculate zoom ratio to completely fill screen
+                    ratio = max(screen_width / img.width, screen_height / img.height)
                     new_width = int(img.width * ratio)
                     new_height = int(img.height * ratio)
                     
+                    # Resize and crop to ensure no borders
                     resized_img = img.resize((new_width, new_height), resample=Image.Resampling.LANCZOS)
-                    img_tk = ImageTk.PhotoImage(resized_img)
+                    
+                    # Calculate crop coordinates to center the image
+                    left = (new_width - screen_width) // 2
+                    top = (new_height - screen_height) // 2
+                    right = left + screen_width
+                    bottom = top + screen_height
+                    
+                    cropped_img = resized_img.crop((left, top, right, bottom))
+                    
+                    img_tk = ImageTk.PhotoImage(cropped_img)
                     mode_frames.append(img_tk)
                 except Exception as e:
                     print(f"Error loading image {path}: {e}")
                     
-            if mode_frames:  # เพิ่มเฟรมเข้า images เมื่อมีการโหลดสำเร็จ
+            if mode_frames:
                 images[mode] = mode_frames
                 
         if not images:
