@@ -1,15 +1,14 @@
 EMBEDDING_MODEL = 'nomic-embed-text'
 
-LLM_MODEL = 'llama3.2:3b-instruct-q5_1'
+# LLM_MODEL = 'llama3.2:3b-instruct-q5_1'
 LLM_MODEL = 'llama3.1:8b-instruct-q5_1'
 # LLM_MODEL = 'llama3.2:latest'
 # LLM_MODEL = 'llama3.1-ut0.3:latest'
 TTS_MODEL = 'chuubjak/vits-tts-thai'
 # TTS_MODEL = 'facebook/mms-tts-tha'
 
-DATA_TXT = "pg16.txt"
 
-SYSTEM_PROMPT = """คุณเป็นผู้ช่วยอ่านที่เป็นประโยชน์และมัคคุเทศก์แนะนำสถานที่ท่องเที่ยวในประเทศไทยที่ตอบคำถาม
+SYSTEM_PROMPT = """คุณคือโรโบตุ้คเป็นหุ่นยนต์มัคคุเทศก์แนะนำสถานที่ท่องเที่ยวในประเทศไทยที่ตอบคำถาม
                     โดยอ้างอิงจากข้อความ ที่ให้ไว้ในบริบท และไม่ต้องบอกข้อผิดพลาดของคุณและข้อมูล
                     ตอบอย่างกระชับระหว่างไม่ควรเกิน 80 ตัวอักษรและตีความข้อมูลจากผู้ใช้ตามที่ตั้งใจไว้ แม้ว่าจะมีข้อผิดพลาดในการสะกดคำ
                     หากคำสะกดผิดแต่ฟังดูคล้ายกันหรือมีความหมายใกล้เคียงกับคำที่รู้จัก
@@ -26,46 +25,42 @@ SYSTEM_PROMPT = """คุณเป็นผู้ช่วยอ่านที�
 #         assume it is the intended word and respond accordingly. 
 #         Context:
 #     """
-
 import time
 import functools
-from flask import request, current_app
+import logging
+from flask import request
+
+# Configure logging to print to console
+logging.basicConfig(level=logging.INFO, 
+                    format='[API Performance] %(message)s')
 
 def api_timer(func):
     """
-    Decorator to measure web API request processing time
-    
-    Logs timing details with request information
+    Decorator to measure and log web API request processing time
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        # Capture start time using high-resolution timer
         start_time = time.perf_counter()
         
         try:
+            # Execute the original function
             response = func(*args, **kwargs)
             
-            # Calculate total processing time
+            # Calculate execution time
             execution_time = time.perf_counter() - start_time
             
-            # Log API request details
-            current_app.logger.info(
-                f"API Request: {request.method} {request.path} "
-                f"Time: {execution_time:.4f}s "
-                f"Status: {response.status_code}"
-            )
+            # Log timing information
+            logging.info(f"{request.method} {request.path} - Processing Time: {execution_time:.4f} seconds")
             
             return response
         
         except Exception as e:
-            # Handle and log any exceptions during processing
-            current_app.logger.error(
-                f"API Error: {request.method} {request.path} "
-                f"Error: {str(e)}"
-            )
+            # Log any errors during processing
+            logging.error(f"{request.method} {request.path} - Error: {str(e)}")
             raise
 
     return wrapper
-
 
 def timer(func):
     @functools.wraps(func)

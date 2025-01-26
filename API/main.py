@@ -25,9 +25,10 @@ model = WhisperModel("small", device="cuda")
 def hello():
     return "Hello from Flask!"
 
-@api_timer
+
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
+    stt_start_time = time.perf_counter()
     # Check if a file is sent
     if 'file' not in request.files:
         return "No file provided", 400
@@ -44,10 +45,13 @@ def transcribe():
     # Combine transcription segments
     transcription = " ".join([segment.text for segment in segments])
     print(f"Transcription completed: {transcription}")
+    stt_time_counter = round(time.perf_counter() - stt_start_time,2)
+    return jsonify({
+        "transcription": transcription,
+        "time_use": stt_time_counter
+        })
 
-    return jsonify({"transcription": transcription})
 
-@api_timer
 @app.before_request
 def initialize_embeddings():
     global paragraphs, embeddings, text_simi
@@ -60,9 +64,9 @@ def initialize_embeddings():
         paragraphs.extend(file_paragraphs)
         embeddings.extend(file_embeddings)
         
-@api_timer
 @app.route('/chat', methods=['POST'])
 def handle_chat():
+    llm_start_time = time.perf_counter()
     data = request.json
     prompt = data.get("prompt", "")
 
@@ -81,20 +85,24 @@ def handle_chat():
             {"role": "user", "content": prompt},
         ],
     )
-
+    llm_processing_time = time.perf_counter() - llm_start_time
+    tts_start_time = time.perf_counter()
     audio_file_path = "static/audio/response.wav"  # Save audio in a static folder
     # Process TTS
     tts_text = response["message"]["content"]
     tts = TTS(tts_text,audio_file_path)
-    # tts.vistts(TTS_MODEL)
-    tts.gtts()
+    tts.vistts(TTS_MODEL)
+    # tts.gtts()
 
+    tts_processing_time = time.perf_counter() - tts_start_time
     # Check for QR code in the response
     qr_path = qr_handler.find_qr_in_response(response["message"]["content"])
     return jsonify({
         "response": response["message"]["content"],
         "qr_path": qr_path,
-        "audio_path": audio_file_path  # Include the audio file path in the response
+        "audio_path": audio_file_path,  # Include the audio file path in the response
+        "llm_time_couter": round(llm_processing_time, 2),
+        "tts_time_couter": round(tts_processing_time,2)
     })
 
 

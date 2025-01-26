@@ -38,6 +38,8 @@ class MainApplication:
         self.face.handle_qr(qr_path)
         
         print(f"AI Response: {response['response']}")
+        print(f"llm process : {response['llm_time_couter']} s")
+        print(f"tts proces : {response['tts_time_couter']} s")
         
         # Play audio if present
         audio_path = response.get("audio_path")

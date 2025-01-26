@@ -36,11 +36,11 @@ class TTS:
         
 
 
-    def clean_text(self,text):
+    def clean_text(self, text):
         # ตรวจสอบว่ามี 'q' ถึง '.png' หรือไม่
         if re.search(r'q.*?\.png', text, flags=re.IGNORECASE):
             # ใช้ regex เพื่อลบข้อความตั้งแต่ตัว 'q' ถึง '.png'
-            cleaned_text = re.sub(r'q.*?\.png', '', text, flags=re.IGNORECASE)
-            return cleaned_text
+            text = re.sub(r'q.*?\.png', '', text, flags=re.IGNORECASE)
+        text = re.sub(r'(ครับ/|ครับ|ผม/|ผม )', '', text)
 
         return text

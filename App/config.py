@@ -1,8 +1,8 @@
 # Backend API URL
 # API_URL = "http://192.168.42.69:5000/chat"
 # API_PATH = "http://192.168.42.69:5000/"
-API_URL = "http://127.0.0.1:5000/chat"
 API_PATH = "http://127.0.0.1:5000/"
+
 # We’ll assume /transcribe is called from recorder.py
 
 # Animation states

@@ -57,17 +57,4 @@ class Recorder:
         print(f"[Recorder] WAV saved: {wav_file}")
         return wav_file
 
-    def transcribe_audio(self, wav_file):
-        """Send the recorded audio to the backend for transcription."""
-        url = "http://127.0.0.1:5000/transcribe"  # Backend endpoint
-        print("[Recorder] Uploading audio to backend for transcription...")
-        with open(wav_file, 'rb') as f:
-            response = requests.post(url, files={"file": f})
-        if response.status_code == 200:
-            json_data = response.json()
-            transcription = json_data.get("transcription", "")
-            print(f"[Recorder] Transcription: {transcription}")
-            return transcription
-        else:
-            print(f"[Recorder] Error: {response.text}")
-            return ""
+   

@@ -1,8 +1,9 @@
 from recorder import Recorder
-
+from service import AIService
 class Microphone:
     def __init__(self):
         self.recorder = Recorder(sample_rate=16000, channels=1)
+        self.service = AIService()
         self.is_recording = False
         
     def toggle_recording(self, callback):
@@ -19,5 +20,5 @@ class Microphone:
         self.is_recording = False
         wav_file = self.recorder.stop()
         if wav_file:
-            transcription = self.recorder.transcribe_audio(wav_file)
+            transcription = self.service.transcribe_audio(wav_file)
             callback(transcription)
