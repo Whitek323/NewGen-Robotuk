@@ -19,7 +19,7 @@ paragraphs = []
 embeddings = []
 
 first_request = True
-model = WhisperModel("small", device="cuda")
+model = WhisperModel("small", device="cpu")
 
 @app.route("/")
 def hello():

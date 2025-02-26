@@ -1,8 +1,8 @@
 EMBEDDING_MODEL = 'nomic-embed-text'
 
 # LLM_MODEL = 'llama3.2:3b-instruct-q5_1'
-LLM_MODEL = 'llama3.1:8b-instruct-q5_1'
-# LLM_MODEL = 'llama3.2:latest'
+# LLM_MODEL = 'llama3.1:8b-instruct-q5_1'
+LLM_MODEL = 'llama3.2:latest'
 # LLM_MODEL = 'llama3.1-ut0.3:latest'
 TTS_MODEL = 'chuubjak/vits-tts-thai'
 # TTS_MODEL = 'facebook/mms-tts-tha'

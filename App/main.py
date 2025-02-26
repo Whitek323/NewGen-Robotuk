@@ -37,9 +37,10 @@ class MainApplication:
         qr_path = self.service.get_qr_path(response.get("qr_path"))
         self.face.handle_qr(qr_path)
         
-        print(f"AI Response: {response['response']}")
-        print(f"llm process : {response['llm_time_couter']} s")
-        print(f"tts proces : {response['tts_time_couter']} s")
+        print(f"AI Response: {response.get('response', 0)}")
+        print(f"llm process : {response.get('llm_time_couter', 0)} s")
+        print(f"tts proces : {response.get('tts_time_couter', 0)} s")
+
         
         # Play audio if present
         audio_path = response.get("audio_path")
